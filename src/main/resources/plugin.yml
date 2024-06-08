@@ -2,3 +2,9 @@ name: LienubsTeam
 version: '${project.version}'
 main: lienub.dev.lienubsteam.LienubsTeam
 api-version: '1.20'
+
+commands:
+  team:
+    description: "Commande concernant la gestion de votre équipe"
+    usage: "/<command> [create|info|claim|unclaim] [teamName (create)]"
+    permission: lienubsteam.team
