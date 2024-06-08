@@ -3,18 +3,21 @@ package lienub.dev.lienubsteam.utils.db;
 import lienub.dev.lienubsteam.LienubsTeam;
 import org.jetbrains.annotations.NotNull;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 
 public class Database {
-    String url = "jdbc:sqlite:";
-    LienubsTeam plugin;
-    Logger logger;
+    private HikariDataSource ds;
+    private String url = "jdbc:sqlite:";
+    private LienubsTeam plugin;
+    private Logger logger;
 
     public Database(LienubsTeam plugin) {
         this.plugin = plugin;
@@ -53,6 +56,11 @@ public class Database {
 
         this.url += databaseFile.getAbsolutePath();
 
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setDriverClassName("org.sqlite.JDBC");
+        ds = new HikariDataSource(config);
+
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
@@ -64,8 +72,12 @@ public class Database {
         }
     }
 
+    public LienubsTeam getPlugin() {
+        return plugin;
+    }
+
     public void makeQuery(@NotNull String query) {
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = ds.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(query);
         } catch (SQLException e) {
@@ -73,16 +85,36 @@ public class Database {
         }
     }
 
-    public List<String> selectQuery(@NotNull String query, List<Object> parameters) {
-        List<String> list = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(url);
+    public void makeQuery(@NotNull String query, List<Object> parameters) {
+        try (Connection conn = ds.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             for (int i = 0; i < parameters.size(); i++) {
                 pstmt.setObject(i + 1, parameters.get(i));
             }
-            ResultSet rs = pstmt.executeQuery(query);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+        }
+    }
+
+    public List<Map<String, Object>> selectQuery(@NotNull String query, List<Object> parameters) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        try (Connection conn = ds.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+            ResultSet rs = pstmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
             while (rs.next()) {
-                list.add(rs.getString(1));
+                Map<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    String colName = rsmd.getColumnName(i);
+                    Object colVal = rs.getObject(i);
+                    row.put(colName, colVal);
+                }
+                list.add(row);
             }
         } catch (SQLException e) {
             logger.info(e.getMessage());
@@ -90,17 +122,13 @@ public class Database {
         return list;
     }
 
-    public List<String> selectQuery(@NotNull String query) {
+    public List<Map<String, Object>> selectQuery(@NotNull String query) {
         return selectQuery(query, new ArrayList<>());
     }
 
     public void close() {
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            logger.info(e.getMessage());
+        if (ds != null) {
+            ds.close();
         }
     }
 
