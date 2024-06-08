@@ -122,8 +122,6 @@ public class Database {
                 	updated_at datetime DEFAULT CURRENT_TIMESTAMP,
                  PRIMARY KEY (team_id, player_id),
                  FOREIGN KEY (team_id) REFERENCES team (id)
-                 ON UPDATE CASCADE ON DELETE CASCADE,
-                 FOREIGN KEY (player_id) REFERENCES players (id)
                  ON UPDATE CASCADE ON DELETE CASCADE
                 );""");
         makeQuery("""
@@ -132,6 +130,7 @@ public class Database {
                 	team_id integer NOT NULL,
                 	x integer NOT NULL,
                 	z integer NOT NULL,
+                	world text NOT NULL,
                 	created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 	updated_at datetime DEFAULT CURRENT_TIMESTAMP,
                  FOREIGN KEY (team_id) REFERENCES team (id)
