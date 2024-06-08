@@ -1,24 +1,32 @@
 package lienub.dev.lienubsteam;
 
+import lienub.dev.lienubsteam.commands.TeamCommand;
+import lienub.dev.lienubsteam.listeners.BlockInteractionListener;
 import lienub.dev.lienubsteam.listeners.PlayerPositionListener;
 import lienub.dev.lienubsteam.utils.db.Database;
+import lienub.dev.lienubsteam.utils.managers.TeamManager;
+import lienub.dev.lienubsteam.utils.team.Member;
+import lienub.dev.lienubsteam.utils.team.Team;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.Nullable;
+import lienub.dev.lienubsteam.utils.db.dao.TeamDAO;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class LienubsTeam extends JavaPlugin {
     private static LienubsTeam instance;
     public Database database;
-
+    public TeamManager teamManager;
     /**
      * Our default constructor for {@link LienubsTeam}.
      */
@@ -66,9 +74,8 @@ public final class LienubsTeam extends JavaPlugin {
     private static void setInstance(@Nullable LienubsTeam pluginInstance) {
         instance = pluginInstance;
     }
-
-    public static LienubsTeam getPlugin() {
-        return instance;
+    public static LienubsTeam getInstance() {
+        return getPlugin(LienubsTeam.class);
     }
 
     public void onPluginStart() {
@@ -100,21 +107,29 @@ public final class LienubsTeam extends JavaPlugin {
             logger.info("Java version is up to date.");
         }
 
+        logger.log(Level.INFO, "Initializing objects...");
+        registerObjects();
+
         logger.log(Level.INFO, "Registering listeners...");
         registerListener();
 
         logger.log(Level.INFO, "Registering commands...");
-        getCommands();
+        registerCommands();
 
         logger.log(Level.INFO, "Plugin started in " + (System.nanoTime() - timestamp) + " nanoseconds.");
 
     }
 
-    public void getCommands() {
-        //TODO: Register commands
+    public void registerObjects() {
+        teamManager = new TeamManager(new TeamDAO(database));
+    }
+
+    public void registerCommands() {
+        Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand(this));
     }
 
     public void registerListener() {
         new PlayerPositionListener(this);
+        new BlockInteractionListener(this);
     }
 }
