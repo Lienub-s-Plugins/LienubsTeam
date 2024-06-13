@@ -21,6 +21,6 @@ jobs:
           -d '{
                 "username": "GitHub Actions",
                 "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-                "content": "New release in **${REPO_NAME}**!\n\n**${RELEASE_NAME}**\nTag: ${RELEASE_TAG}\n[View Release](${RELEASE_URL})"
+                "content": "New release in **${{REPO_NAME}}**!\n\n**${{RELEASE_NAME}}**\nTag: ${{RELEASE_TAG}}\n[View Release](${{RELEASE_URL}})"
               }' \
           $DISCORD_WEBHOOK_URL
