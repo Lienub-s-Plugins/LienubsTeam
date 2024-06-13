@@ -72,10 +72,6 @@ public class Database {
         }
     }
 
-    public LienubsTeam getPlugin() {
-        return plugin;
-    }
-
     public void makeQuery(@NotNull String query) {
         try (Connection conn = ds.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -136,16 +132,16 @@ public class Database {
         makeQuery("""
                 CREATE TABLE IF NOT EXISTS team (
                 id integer PRIMARY KEY,
-                	name text NOT NULL,
-                	owner_id text NOT NULL,
+                	name text NOT NULL UNIQUE,
+                	owner_id text NOT NULL UNIQUE,
                 	created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 	updated_at datetime DEFAULT CURRENT_TIMESTAMP
                 );""");
         makeQuery("""
                 CREATE TABLE IF NOT EXISTS team_members (
                 team_id integer NOT NULL,
-                	player_id text NOT NULL,
-                	role text NOT NULL,
+                	player_id text NOT NULL UNIQUE,
+                	role text NOT NULL DEFAULT 'member',
                 	created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 	updated_at datetime DEFAULT CURRENT_TIMESTAMP,
                  PRIMARY KEY (team_id, player_id),

@@ -6,5 +6,69 @@ api-version: '1.20'
 commands:
   team:
     description: "Commande concernant la gestion de votre équipe"
-    usage: "/<command> [create|info|claim|unclaim] [teamName (create)]"
-    permission: lienubsteam.team
+    usage: "/<command> [create|info|claim|unclaim|invite|join|leave|tpa|kick|promote|demote|disband|transfer] [args]"
+
+permissions:
+    lienubsteam.team.*:
+        description: "Permet d'accéder à toutes les commandes de LienubsTeam"
+        default: op
+        children:
+            lienubsteam.team.info: true
+            lienubsteam.team.create: true
+            lienubsteam.team.join.accept: true
+            lienubsteam.team.join.deny: true
+            lienubsteam.team.leave: true
+            lienubsteam.team.tpa: true
+            lienubsteam.team.invite.add: true
+            lienubsteam.team.kick: true
+            lienubsteam.team.claim: true
+            lienubsteam.team.unclaim: true
+            lienubsteam.team.promote: true
+            lienubsteam.team.demote: true
+            lienubsteam.team.disband: true
+            lienubsteam.team.transfer: true
+    lienubsteam.team.info:
+        description: "Permet de voir les informations de votre équipe"
+        default: true
+    lienubsteam.team.create:
+        description: "Permet de créer une équipe"
+        default: true
+    lienubsteam.team.join.request:
+        description: "Permet de rejoindre une équipe"
+        default: true
+    lienubsteam.team.leave:
+        description: "Permet de quitter une équipe"
+        default: true
+    lienubsteam.team.tpa:
+        description: "Permet de demander un téléportation à un membre de votre équipe"
+        default: false
+    lienubsteam.team.invite.accept:
+      description: "Permet d'accepter une invitation dans une équipe"
+      default: true
+    lienubsteam.team.invite.deny:
+      description: "Permet de refuser une invitation dans une équipe"
+      default: true
+    lienubsteam.team.invite.add:
+        description: "Permet d'inviter un joueur dans votre équipe"
+        default: false
+    lienubsteam.team.kick:
+        description: "Permet d'exclure un joueur de votre équipe"
+        default: false
+    lienubsteam.team.claim:
+        description: "Permet de revendiquer un territoire"
+        default: false
+    lienubsteam.team.unclaim:
+        description: "Permet de dérevendiquer un territoire"
+        default: false
+    lienubsteam.team.promote:
+        description: "Permet de promouvoir un joueur dans votre équipe"
+        default: false
+    lienubsteam.team.demote:
+        description: "Permet de rétrograder un joueur dans votre équipe"
+        default: false
+    lienubsteam.team.disband:
+        description: "Permet de dissoudre votre équipe"
+        default: false
+    lienubsteam.team.transfer:
+      description: "Permet de transférer le lead de votre équipe"
+      default: false
