@@ -7,12 +7,7 @@ import lienub.dev.lienubsteam.utils.team.Role;
 import lienub.dev.lienubsteam.utils.team.Team;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TeamDAO implements DAO<Team, Object> {
     private final Database database;
@@ -25,7 +20,7 @@ public class TeamDAO implements DAO<Team, Object> {
     public Team createTeam(String name, Player leader) {
         List<Member> members = new ArrayList<>();
         members.add(new Member(leader.getUniqueId(), Role.LEADER));
-        Team team = new Team(this, null, name, leader.getUniqueId().toString(), members, new ArrayList<>());
+        Team team = new Team(this, null, name, leader.getUniqueId(), members, new ArrayList<>());
         return insert(team);
     }
 
@@ -39,7 +34,6 @@ public class TeamDAO implements DAO<Team, Object> {
         } catch (Exception e) {
             LienubsTeam.getInstance().getLogger().severe("Failed to insert team into database.");
         }
-
         // Get the team after inserting it into the database
         try {
             String query = "SELECT id FROM team WHERE name = ? AND owner_id = ?";
@@ -69,23 +63,31 @@ public class TeamDAO implements DAO<Team, Object> {
         try {
             String query;
             List<Object> params;
-            LienubsTeam.getInstance().getLogger().warning("CLASSNAME: " + object.getClass().getSimpleName());
             switch (object.getClass().getSimpleName()) {
                 case "Member":
                     Member player = (Member) object;
-
                     query = "INSERT INTO team_members (team_id, player_id, role) VALUES (?, ?, ?)";
                     params = List.of(in.getId(), player.getPlayerUUID().toString(), player.getRole());
-                    LienubsTeam.getInstance().getLogger().info("params: " + params);
                     database.makeQuery(query, params);
-                    in.getMembers().add(player);
+
+                    if (!in.getMembers().contains(player)) {
+                        in.getMembers().add(player);
+                    }
+
                     break;
                 case "CraftChunk":
+                    if(in.getClaimedChunks().contains(object)) {
+                        return;
+                    }
                     Chunk chunk = (Chunk) object;
                     query = "INSERT INTO claim_chunks (team_id, x, z, world) VALUES (?, ?, ?, ?)";
                     params = List.of(in.getId(), chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
                     database.makeQuery(query, params);
-                    in.getClaimedChunks().add(chunk);
+
+                    if (!in.getClaimedChunks().contains(chunk)) {
+                        in.getClaimedChunks().add(chunk);
+                    }
+
                     break;
                 default:
                     LienubsTeam.getInstance().getLogger().severe("Failed to insert object: " + object + " into database.");
@@ -97,7 +99,19 @@ public class TeamDAO implements DAO<Team, Object> {
 
     @Override
     public void update(Team in, Object object) {
-
+        try {
+            String query;
+            List<Object> params;
+            if (object instanceof Member player) {
+                query = "UPDATE team_members SET role = ? WHERE team_id = ? AND player_id = ?";
+                params = List.of(player.getRole(), in.getId(), player.getPlayerUUID().toString());
+                database.makeQuery(query, params);
+            } else {
+                LienubsTeam.getInstance().getLogger().severe("Incorrect object type: " + object.getClass().getSimpleName());
+            }
+        } catch (Exception e) {
+            LienubsTeam.getInstance().getLogger().severe("Failed to update object: " + object + " in database.");
+        }
     }
 
     @Override
@@ -106,7 +120,35 @@ public class TeamDAO implements DAO<Team, Object> {
 
     @Override
     public void delete(Team in) {
+        if (in == null) {
+            LienubsTeam.getInstance().getLogger().severe("Failed to delete team from database: Team is null");
+            return;
+        }
 
+        if (database == null) {
+            LienubsTeam.getInstance().getLogger().severe("Failed to delete team from database: Database is null");
+            return;
+        }
+
+        try {
+            String query = "DELETE FROM team WHERE id = ?";
+            List<Object> params = List.of(in.getId());
+            database.makeQuery(query, params);
+
+            List<Member> members = new ArrayList<>(in.getMembers());
+            for (Member member : members) {
+                delete(in, member);
+                in.getMembers().remove(member);
+            }
+
+            List<Chunk> chunks = new ArrayList<>(in.getClaimedChunks());
+            for (Chunk chunk : chunks) {
+                delete(in, chunk);
+                in.getClaimedChunks().remove(chunk);
+            }
+        } catch (Exception e) {
+            LienubsTeam.getInstance().getLogger().severe("Failed to delete team from database: " + Arrays.toString(e.getStackTrace()));
+        }
     }
 
     @Override
@@ -114,6 +156,12 @@ public class TeamDAO implements DAO<Team, Object> {
         try {
             String query;
             List<Object> params;
+
+            if (object == null) {
+                LienubsTeam.getInstance().getLogger().severe("Failed to delete object from database: Object is null");
+                return;
+            }
+
             switch (object.getClass().getSimpleName()) {
                 case "Member":
                     Member player = (Member) object;
@@ -129,6 +177,8 @@ public class TeamDAO implements DAO<Team, Object> {
                     database.makeQuery(query, params);
                     in.getClaimedChunks().remove(chunk);
                     break;
+                default:
+                    LienubsTeam.getInstance().getLogger().warning("Cannot delete object: " + object + " from database. Object not recognized.");
             }
         } catch (Exception e) {
             LienubsTeam.getInstance().getLogger().severe("Failed to delete object: " + object + " from database.");
@@ -138,19 +188,16 @@ public class TeamDAO implements DAO<Team, Object> {
     @Override
     public List<Team> get() {
         List<Team> teams = new ArrayList<>(List.of());
-        List<Member> members = new ArrayList<>(List.of());
-        List<Chunk> claimedChunks = new ArrayList<>(List.of());
         // get every team from the database
         try {
-
             // Get all teams
             String query = "SELECT * FROM team";
             List<Map<String, Object>> results = database.selectQuery(query);
             for (Map<String, Object> result : results) {
                 Integer id = (Integer) result.get("id");
                 String name = (String) result.get("name");
-                String leader = (String) result.get("owner_id");
-                Team team = new Team(this, id, name, leader, members, claimedChunks);
+                UUID leader = UUID.fromString(result.get("owner_id").toString());
+                Team team = new Team(this, id, name, leader,  new ArrayList<>(), new ArrayList<>());
                 teams.add(team);
             }
 
@@ -161,7 +208,6 @@ public class TeamDAO implements DAO<Team, Object> {
                     List<Map<String, Object>> memberResults = database.selectQuery(query, List.of(team.getId()));
                     // Get all members of the team from uuid string stored in the database
                     for (Map<String, Object> memberResult : memberResults) {
-                        LienubsTeam.getInstance().getLogger().info("MemberResult: " + memberResult);
                         String uuid = (String) memberResult.get("player_id");
                         Member member = new Member(UUID.fromString(uuid), Role.fromString((String) memberResult.get("role")));
                         team.getMembers().add(member);
