@@ -39,8 +39,11 @@ import java.util.*;
  * @see Iterator
  */
 public class TeamManager {
-    private List<Team> teams;
-    private TeamDAO teamDAO;
+    private final Map<UUID, List<Team>> invitations = new HashMap<>();
+    private final Map<UUID, List<Team>> joinRequests = new HashMap<>();
+    private final Map<UUID, UUID> tpaRequests = new HashMap<>();
+    private final List<Team> teams;
+    private final TeamDAO teamDAO;
 
     /**
      * Instantiates a new Team manager.
