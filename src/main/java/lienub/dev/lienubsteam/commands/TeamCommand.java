@@ -730,6 +730,17 @@ public class TeamCommand implements CommandExecutor, TabExecutor {
         // Teleport to a player
         Player player = (Player) commandSender;
         Player target = plugin.getServer().getPlayer(strings[1]);
+
+        if (target == null) {
+            player.spigot().sendMessage(TextComponentUtil.createErrorMessage(NOT_CONNECTED));
+            return;
+        }
+
+        if (Objects.equals(player.getName(), target.getName())) {
+            player.spigot().sendMessage(TextComponentUtil.createErrorMessage("Tu ne peux pas te téléporter vers toi-même."));
+            return;
+        }
+
         Team team = plugin.getTeamManager().getTeamFromPlayer(player);
         if (team == null) {
             player.spigot().sendMessage(TextComponentUtil.createErrorMessage(NO_TEAM));
@@ -741,11 +752,6 @@ public class TeamCommand implements CommandExecutor, TabExecutor {
         } else if (Objects.equals(strings[1], "deny")) {
             denyTpa(player);
         } else {
-            if (target == null) {
-                player.spigot().sendMessage(TextComponentUtil.createErrorMessage(NOT_CONNECTED));
-                return;
-            }
-
             if (plugin.getTeamManager().getTeamFromPlayer(target) == null) {
                 player.spigot().sendMessage(TextComponentUtil.createErrorMessage("Ce joueur n'est pas dans une équipe."));
                 return;
