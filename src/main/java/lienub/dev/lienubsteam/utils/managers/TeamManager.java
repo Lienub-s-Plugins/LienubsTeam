@@ -147,7 +147,7 @@ public class TeamManager {
     public Team getTeamFromPlayer(Player player) {
         for (Team team : teams) {
             for (Member member : team.getMembers()) {
-                if (LienubsTeam.getInstance().getServer().getOfflinePlayer(member.getPlayerUUID()).equals(player)) {
+                if (member.getPlayerUUID().equals(player.getUniqueId())) {
                     return team;
                 }
             }
