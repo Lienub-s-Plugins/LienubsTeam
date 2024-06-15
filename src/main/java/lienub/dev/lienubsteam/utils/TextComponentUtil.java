@@ -8,6 +8,19 @@ import net.md_5.bungee.api.chat.TextComponent;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class for creating text components.
+ *
+ * @version 1.0
+ * @see TextComponent
+ * @see ChatColor
+ * @see ClickEvent
+ * @see HoverEvent
+ * @see Text
+ * @see BaseComponent
+ * @see TextComponent
+ * @since 1.0
+ */
 public class TextComponentUtil {
     public static TextComponent createMessage(String message, ChatColor color) {
         TextComponent textComponent = new TextComponent(message);
@@ -15,6 +28,12 @@ public class TextComponentUtil {
         return textComponent;
     }
 
+    /**
+     * Create error message text component.
+     *
+     * @param message the message
+     * @return the text component
+     */
     public static TextComponent createErrorMessage(String message) {
         TextComponent errorComponent = new TextComponent("✖  ");
         errorComponent.setColor(ChatColor.RED);
@@ -26,6 +45,12 @@ public class TextComponentUtil {
 
     }
 
+    /**
+     * Create info message text component.
+     *
+     * @param message the message
+     * @return the text component
+     */
     public static TextComponent createInfoMessage(String message) {
         TextComponent infoComponent = new TextComponent("ℹ ");
         infoComponent.setColor(ChatColor.AQUA);
@@ -36,6 +61,12 @@ public class TextComponentUtil {
         return infoComponent;
     }
 
+    /**
+     * Create success message text component.
+     *
+     * @param message the message
+     * @return the text component
+     */
     public static TextComponent createSuccessMessage(String message) {
         TextComponent successComponent = new TextComponent("✔  ");
         successComponent.setColor(ChatColor.GREEN);
@@ -46,6 +77,14 @@ public class TextComponentUtil {
         return successComponent;
     }
 
+    /**
+     * Create special message text component.
+     * The actions are listed in a list of maps.
+     *
+     * @param message the message
+     * @param actions the actions
+     * @return the text component
+     */
     public static TextComponent createSpecialMessage(String message, List<Map<ClickEvent.Action, String>> actions) {
         TextComponent textComponent = new TextComponent(message);
 
@@ -57,6 +96,13 @@ public class TextComponentUtil {
         return textComponent;
     }
 
+    /**
+     * Create accept/deny message text component.
+     *
+     * @param acceptCommand the accept command
+     * @param denyCommand   the deny command
+     * @return the text component
+     */
     public static TextComponent createAcceptDenyMessage(String acceptCommand, String denyCommand) {
         TextComponent acceptComponent = new TextComponent("✔  ");
         acceptComponent.setColor(ChatColor.GREEN);
