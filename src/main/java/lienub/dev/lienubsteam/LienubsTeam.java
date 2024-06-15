@@ -276,5 +276,7 @@ public final class LienubsTeam extends JavaPlugin {
     public void registerListener() {
         new PlayerPositionListener(this);
         new BlockInteractionListener(this);
+        new TeamInfoListener(this);
+        new PlayerJoinListener(this);
     }
 }
