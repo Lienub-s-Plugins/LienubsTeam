@@ -1,11 +1,16 @@
 package lienub.dev.lienubsteam.utils;
 
+import lienub.dev.lienubsteam.LienubsTeam;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +90,7 @@ public class InventoriesUtil {
      * @param lore        the lore
      * @return the item meta
      */
-    public static @Nullable ItemMeta initItemMeta(@NotNull ItemStack item, @Nullable String displayName, @Nullable List<String> lore) {
+    public static @Nullable ItemMeta initItemMeta(@NotNull ItemStack item, @Nullable String displayName, @Nullable List<String> lore, @Nullable String nbt) {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta == null) {
             return null;
@@ -97,6 +102,12 @@ public class InventoriesUtil {
 
         if (lore != null) {
             itemMeta.setLore(lore);
+        }
+
+        if (nbt != null) {
+            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+            NamespacedKey key = new NamespacedKey(JavaPlugin.getPlugin(LienubsTeam.class), nbt);
+            container.set(key, PersistentDataType.STRING, displayName != null ? displayName : " ");
         }
 
         item.setItemMeta(itemMeta);

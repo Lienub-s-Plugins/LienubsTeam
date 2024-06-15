@@ -81,11 +81,11 @@ public class TeamInfoHolder implements InventoryHolder {
     private void setup() {
         // Set the outline of the inventory with glass panes of gray/orange color.
         ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta glassPaneMeta = InventoriesUtil.initItemMeta(glassPane, " ", null);
+        ItemMeta glassPaneMeta = InventoriesUtil.initItemMeta(glassPane, " ", null, null);
         glassPane.setItemMeta(glassPaneMeta);
 
         ItemStack orangeGlassPane = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
-        ItemMeta orangeGlassPaneMeta = InventoriesUtil.initItemMeta(orangeGlassPane, " ", null);
+        ItemMeta orangeGlassPaneMeta = InventoriesUtil.initItemMeta(orangeGlassPane, " ", null, null);
         orangeGlassPane.setItemMeta(orangeGlassPaneMeta);
 
         InventoriesUtil.setupInventoryOutline(6, this.inventory, glassPane, orangeGlassPane);
@@ -93,13 +93,13 @@ public class TeamInfoHolder implements InventoryHolder {
         // Leader head
         OfflinePlayer leader = LienubsTeam.getInstance().getServer().getOfflinePlayer(LienubsTeam.getInstance().getTeamManager().getTeamFromPlayer(player).getLeader());
         ItemStack skull = InventoriesUtil.getPlayerHead(LienubsTeam.getInstance().getServer().getOfflinePlayer(LienubsTeam.getInstance().getTeamManager().getTeamFromPlayer(player).getLeader()));
-        ItemMeta skullMeta = InventoriesUtil.initItemMeta(skull, "Leader de l'équipe", List.of(leader.getName() != null ? leader.getName() : " "));
+        ItemMeta skullMeta = InventoriesUtil.initItemMeta(skull, "Leader de l'équipe", List.of(leader.getName() != null ? leader.getName() : " "), null);
         skull.setItemMeta(skullMeta);
         this.inventory.setItem(1 * 9 + 3, skull);
 
         // Manage team
         ItemStack manageTeam = new ItemStack(Material.BOOK);
-        ItemMeta manageTeamMeta = InventoriesUtil.initItemMeta(manageTeam, "Gérer l'équipe", List.of("Cliquez pour gérer l'équipe", "AJOUT A LA PROCHAINE VERSION"));
+        ItemMeta manageTeamMeta = InventoriesUtil.initItemMeta(manageTeam, "Gérer l'équipe", List.of("Cliquez pour gérer l'équipe", "AJOUT A LA PROCHAINE VERSION"), null);
         manageTeam.setItemMeta(manageTeamMeta);
         this.inventory.setItem(1 * 9 + 5, manageTeam);
 
@@ -137,21 +137,21 @@ public class TeamInfoHolder implements InventoryHolder {
         if (totalPages != 1) {
             if (currentPage != 0) {
                 ItemStack previousPage = new ItemStack(Material.ARROW);
-                ItemMeta previousPageMeta = InventoriesUtil.initItemMeta(previousPage, "Page précédente", null);
+                ItemMeta previousPageMeta = InventoriesUtil.initItemMeta(previousPage, "Page précédente", null, null);
                 previousPage.setItemMeta(previousPageMeta);
                 this.inventory.setItem(9 * 5 + 3, previousPage);
             }
 
             if (currentPage != totalPages - 1) {
                 ItemStack nextPage = new ItemStack(Material.ARROW);
-                ItemMeta nextPageMeta = InventoriesUtil.initItemMeta(nextPage, "Page suivante", null);
+                ItemMeta nextPageMeta = InventoriesUtil.initItemMeta(nextPage, "Page suivante", null, null);
                 nextPage.setItemMeta(nextPageMeta);
                 this.inventory.setItem(9 * 5 + 5, nextPage);
             }
         }
 
         ItemStack page = new ItemStack(Material.PAPER);
-        ItemMeta pageMeta = InventoriesUtil.initItemMeta(page, "Page " + (currentPage + 1) + "/" + totalPages, null);
+        ItemMeta pageMeta = InventoriesUtil.initItemMeta(page, "Page " + (currentPage + 1) + "/" + totalPages, null, null);
         page.setItemMeta(pageMeta);
         this.inventory.setItem(9 * 5 + 4, page);
     }
@@ -169,11 +169,11 @@ public class TeamInfoHolder implements InventoryHolder {
         List<String> lore;
         if (member.isOnline()) {
             lore = List.of(role, ChatColor.GREEN + ChatColor.BOLD.toString() + "En ligne" + ChatColor.RESET, "Cliquez pour faire une demande de téléportation");
+            return InventoriesUtil.initItemMeta(memberItem, member.getName(), lore, "onlinemember");
         } else {
             lore = List.of(role, ChatColor.RED + ChatColor.BOLD.toString() + "Hors ligne" + ChatColor.RESET);
+            return InventoriesUtil.initItemMeta(memberItem, member.getName(), lore, null);
         }
-
-        return InventoriesUtil.initItemMeta(memberItem, member.getName(), lore);
     }
 
     private int getTotalPages() {
