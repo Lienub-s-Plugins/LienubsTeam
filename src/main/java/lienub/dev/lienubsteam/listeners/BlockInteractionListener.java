@@ -38,6 +38,10 @@ public class BlockInteractionListener implements Listener {
      */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+
         // Check if the chunk is claimed
         if (plugin.getTeamManager().getTeamByChunk(event.getClickedBlock().getChunk()) != null) {
             // Check if the player is a member of the team
