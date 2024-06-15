@@ -39,7 +39,7 @@ public class TextComponentUtil {
     public static TextComponent createErrorMessage(String message) {
         TextComponent errorComponent = new TextComponent("✖  ");
         errorComponent.setColor(ChatColor.RED);
-        TextComponent messageComponent = new TextComponent("| " +message);
+        TextComponent messageComponent = new TextComponent("| " + message);
         messageComponent.setColor(ChatColor.GRAY);
         errorComponent.addExtra(messageComponent);
 
@@ -56,7 +56,7 @@ public class TextComponentUtil {
     public static TextComponent createInfoMessage(String message) {
         TextComponent infoComponent = new TextComponent("ℹ ");
         infoComponent.setColor(ChatColor.AQUA);
-        TextComponent messageComponent = new TextComponent("| " +message);
+        TextComponent messageComponent = new TextComponent("| " + message);
         messageComponent.setColor(ChatColor.GRAY);
         infoComponent.addExtra(messageComponent);
 
@@ -72,7 +72,7 @@ public class TextComponentUtil {
     public static TextComponent createSuccessMessage(String message) {
         TextComponent successComponent = new TextComponent("✔  ");
         successComponent.setColor(ChatColor.GREEN);
-        TextComponent messageComponent = new TextComponent("| " +message);
+        TextComponent messageComponent = new TextComponent("| " + message);
         messageComponent.setColor(ChatColor.GRAY);
         successComponent.addExtra(messageComponent);
 
