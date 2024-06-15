@@ -20,11 +20,22 @@ import java.util.UUID;
 
 public class BlockInteractionListener implements Listener {
     private final LienubsTeam plugin;
+
+    /**
+     * Instantiates a new Block interaction listener.
+     *
+     * @param plugin the plugin
+     */
     public BlockInteractionListener(@NonNull LienubsTeam plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+    /**
+     * On player interact.
+     *
+     * @param event the event
+     */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         // Check if the chunk is claimed
