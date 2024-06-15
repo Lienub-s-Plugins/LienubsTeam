@@ -43,8 +43,8 @@ public class PlayerPositionListener implements Listener {
         Location to = event.getTo() != null ? event.getTo() : from;
 
         if (!from.getChunk().equals(to.getChunk())) {
-            if(plugin.teamManager.getTeamByChunk(to.getChunk()) != null) {
-                player.sendMessage("You entered " + plugin.teamManager.getTeamByChunk(to.getChunk()).getName() + "'s territory");
+            if (plugin.getTeamManager().getTeamByChunk(to.getChunk()) != null) {
+                player.sendMessage("You entered " + plugin.getTeamManager().getTeamByChunk(to.getChunk()).getName() + "'s territory");
             } else {
                 player.sendMessage("You are in the wilderness");
             }
