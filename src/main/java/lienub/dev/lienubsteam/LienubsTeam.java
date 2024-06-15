@@ -2,14 +2,14 @@ package lienub.dev.lienubsteam;
 
 import lienub.dev.lienubsteam.commands.TeamCommand;
 import lienub.dev.lienubsteam.listeners.BlockInteractionListener;
+import lienub.dev.lienubsteam.listeners.PlayerJoinListener;
 import lienub.dev.lienubsteam.listeners.PlayerPositionListener;
+import lienub.dev.lienubsteam.listeners.TeamInfoListener;
 import lienub.dev.lienubsteam.utils.db.Database;
 import lienub.dev.lienubsteam.utils.managers.TeamManager;
-import lienub.dev.lienubsteam.utils.team.Member;
-import lienub.dev.lienubsteam.utils.team.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +19,10 @@ import lienub.dev.lienubsteam.utils.db.dao.TeamDAO;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,8 +73,10 @@ import java.util.logging.Logger;
  */
 public final class LienubsTeam extends JavaPlugin {
     private static LienubsTeam instance;
-    public Database database;
-    public TeamManager teamManager;
+    private Database database;
+    private TeamManager teamManager;
+    private final Map<UUID, PermissionAttachment> playerPermissions = new HashMap<>();
+
     /**
      * Our default constructor for {@link LienubsTeam}.
      */
@@ -130,9 +135,10 @@ public final class LienubsTeam extends JavaPlugin {
         // Terminate instance
         setInstance(null);
 
-        // Close all inventories
+        // Close all inventories and unset permissions
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.closeInventory();
+            p.removeAttachment(playerPermissions.get(p.getUniqueId()));
         }
     }
 
@@ -207,10 +213,8 @@ public final class LienubsTeam extends JavaPlugin {
 
         //Initialize database
         //check if data folder exists
-        if (!getDataFolder().exists()) {
-            if (!getDataFolder().mkdir()) {
-                logger.log(Level.SEVERE, "Could not create data folder.");
-            }
+        if (!getDataFolder().exists() && !getDataFolder().mkdir()) {
+            logger.log(Level.SEVERE, "Could not create data folder.");
         }
 
         database = new Database(this);
@@ -232,7 +236,7 @@ public final class LienubsTeam extends JavaPlugin {
         logger.log(Level.INFO, "Registering commands...");
         registerCommands();
 
-        logger.log(Level.INFO, "Plugin started in " + (System.nanoTime() - timestamp) + " nanoseconds.");
+        logger.log(Level.INFO, () -> "Plugin started in " + (System.nanoTime() - timestamp) + " nanoseconds.");
 
     }
 
