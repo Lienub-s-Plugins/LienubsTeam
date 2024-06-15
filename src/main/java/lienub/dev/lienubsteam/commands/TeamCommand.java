@@ -12,6 +12,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.*;
+
+/**
+ * Commands to manage teams
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @see CommandExecutor
+ * @see TabExecutor
+ * @see Command
+ * @see CommandSender
+ */
 public class TeamCommand implements CommandExecutor, TabExecutor {
 
     private final LienubsTeam plugin;
