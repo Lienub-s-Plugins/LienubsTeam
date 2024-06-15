@@ -13,12 +13,57 @@ import java.util.*;
 import java.util.logging.Logger;
 
 
+/**
+ * The class describing the database used by the plugin.
+ *
+ * @version 1.0
+ * @see HikariDataSource
+ * @see HikariConfig
+ * @see Logger
+ * @see File
+ * @see SQLException
+ * @see DriverManager
+ * @see ResultSet
+ * @see ResultSetMetaData
+ * @see PreparedStatement
+ * @see Connection
+ * @see HashMap
+ * @see ArrayList
+ * @see List
+ * @see Map
+ * @see Objects
+ * @see Optional
+ * @see LienubsTeam
+ * @see #initDatabase()
+ * @see #initTables()
+ * @see #makeQuery(String)
+ * @see #makeQuery(String, List)
+ * @see #selectQuery(String, List)
+ * @see #selectQuery(String)
+ * @see #checkJDBC()
+ * @see #initDatabaseFile()
+ * @see #setupDatabaseConnection()
+ * @see #Database(LienubsTeam)
+ * @see #url
+ * @see #plugin
+ * @see #logger
+ * @see #ds
+ * @since 1.0
+ */
 public class Database {
     private HikariDataSource ds;
     private String url = "jdbc:sqlite:";
     private LienubsTeam plugin;
     private Logger logger;
 
+    /**
+     * Instantiates a new Database.
+     *
+     * @param plugin the plugin instance linked to the database
+     * @see LienubsTeam
+     * @see Logger
+     * @since 1.0
+     */
     public Database(LienubsTeam plugin) {
         this.plugin = plugin;
         logger = plugin.getLogger();
@@ -72,6 +117,14 @@ public class Database {
         }
     }
 
+    /**
+     * Make a query using a safe prepared statement.
+     * It does not include any parameters to be used in the query.
+     *
+     * @param query the query
+     * @see #makeQuery(String, List)
+     * @since 1.0
+     */
     public void makeQuery(@NotNull String query) {
         try (Connection conn = ds.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -81,6 +134,13 @@ public class Database {
         }
     }
 
+    /**
+     * Make query using a safe prepared statement.
+     * It also includes the parameters to be used in the query.
+     *
+     * @param query      the query
+     * @param parameters the parameters
+     */
     public void makeQuery(@NotNull String query, List<Object> parameters) {
         try (Connection conn = ds.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -93,6 +153,14 @@ public class Database {
         }
     }
 
+    /**
+     * Select query list using a safe prepared statement.
+     * It includes the parameters to be used in the query.
+     *
+     * @param query      the query
+     * @param parameters the parameters
+     * @return the list
+     */
     public List<Map<String, Object>> selectQuery(@NotNull String query, List<Object> parameters) {
         List<Map<String, Object>> list = new ArrayList<>();
         try (Connection conn = ds.getConnection();
@@ -118,6 +186,14 @@ public class Database {
         return list;
     }
 
+    /**
+     * Select query list using a safe prepared statement.
+     * It does not include any parameters to be used in the query.
+     *
+     * @param query the query
+     * @return the list
+     * @see #selectQuery(String, List)
+     */
     public List<Map<String, Object>> selectQuery(@NotNull String query) {
         return selectQuery(query, new ArrayList<>());
     }
