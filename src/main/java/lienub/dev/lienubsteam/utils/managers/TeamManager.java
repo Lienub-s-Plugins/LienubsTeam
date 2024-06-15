@@ -7,6 +7,7 @@ import lienub.dev.lienubsteam.utils.team.Team;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -159,8 +160,9 @@ public class TeamManager {
      * Gets team by chunk.
      *
      * @param chunk the chunk
-     * @return the team by chunk
+     * @return the team by chunk or null if the chunk is not claimed
      */
+    @Nullable
     public Team getTeamByChunk(Chunk chunk) {
         for (Team team : teams) {
             if (team.getClaimedChunks().contains(chunk)) {
