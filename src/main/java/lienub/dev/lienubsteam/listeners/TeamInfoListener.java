@@ -53,6 +53,10 @@ public class TeamInfoListener implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
 
         // Change the page if the player clicked the next/previous page item.
+        pageChangeLogic(clickedItem, inventory);
+    }
+
+    private void pageChangeLogic(ItemStack clickedItem, Inventory inventory) {
         if (clickedItem != null && clickedItem.getItemMeta() != null) {
             TeamInfoHolder holder = (TeamInfoHolder) inventory.getHolder();
             switch (clickedItem.getItemMeta().getDisplayName()) {
