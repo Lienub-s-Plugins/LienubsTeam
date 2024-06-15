@@ -46,7 +46,7 @@ public class BlockInteractionListener implements Listener {
             }
             // Prevent the interaction
             event.setCancelled(true);
-            event.getPlayer().sendMessage("You can't interact in this territory.");
+            event.getPlayer().spigot().sendMessage(TextComponentUtil.createErrorMessage("Tu ne peux pas interagir dans le territoire de cette équipe."));
         }
     }
 }
