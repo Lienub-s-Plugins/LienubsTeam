@@ -159,6 +159,41 @@ public final class LienubsTeam extends JavaPlugin {
         return getPlugin(LienubsTeam.class);
     }
 
+    /**
+     * Gets team manager.
+     *
+     * @return the team manager
+     */
+    public TeamManager getTeamManager() {
+        return teamManager;
+    }
+
+    /**
+     * Gets player permissions.
+     *
+     * @return the player permissions
+     * @see UUID
+     * @see PermissionAttachment
+     */
+    public Map<UUID, PermissionAttachment> getPlayerPermissions() {
+        return playerPermissions;
+    }
+
+    /**
+     * On plugin start.
+     *
+     * @see System
+     * @see Logger
+     * @see #getLogger()
+     * @see Bukkit#getVersion()
+     * @see Logger
+     * @see #getDataFolder()
+     * @see Database
+     * @see #registerObjects()
+     * @see #registerListener()
+     * @see #registerCommands()
+     * @since 1.0
+     */
     public void onPluginStart() {
         long timestamp = System.nanoTime();
         Logger logger = getLogger();
