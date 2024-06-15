@@ -39,9 +39,9 @@ public class BlockInteractionListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         // Check if the chunk is claimed
-        if (plugin.teamManager.getTeamByChunk(event.getClickedBlock().getChunk()) != null) {
+        if (plugin.getTeamManager().getTeamByChunk(event.getClickedBlock().getChunk()) != null) {
             // Check if the player is a member of the team
-            if (plugin.teamManager.getTeamByChunk(event.getClickedBlock().getChunk()).getMembers().stream().anyMatch(member -> member.getPlayerUUID().equals(event.getPlayer().getUniqueId()))) {
+            if (plugin.getTeamManager().getTeamByChunk(event.getClickedBlock().getChunk()).getMembers().stream().anyMatch(member -> member.getPlayerUUID().equals(event.getPlayer().getUniqueId()))) {
                 return;
             }
             // Prevent the interaction
