@@ -23,6 +23,51 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The class describing the main plugin.
+ *
+ * @version 1.0
+ * @see JavaPlugin
+ * @see Plugin
+ * @see PluginDescriptionFile
+ * @see Database
+ * @see TeamManager
+ * @see UUID
+ * @see PermissionAttachment
+ * @see File
+ * @see HashMap
+ * @see Logger
+ * @see TeamCommand
+ * @see Player
+ * @see Bukkit
+ * @see PlayerPositionListener
+ * @see BlockInteractionListener
+ * @see TeamInfoListener
+ * @see PlayerJoinListener
+ * @see TeamDAO
+ * @see ParametersAreNonnullByDefault
+ * @see JavaPluginLoader
+ * @see ParametersAreNonnullByDefault
+ * @see ParametersAreNonnullByDefault
+ * @see ParametersAreNonnullByDefault
+ * @see #onEnable()
+ * @see #onDisable()
+ * @see #setInstance(LienubsTeam)
+ * @see #getInstance()
+ * @see #getTeamManager()
+ * @see #getPlayerPermissions()
+ * @see #onPluginStart()
+ * @see #registerObjects()
+ * @see #registerCommands()
+ * @see #registerListener()
+ * @see #LienubsTeam()
+ * @see #LienubsTeam(JavaPluginLoader, PluginDescriptionFile, File, File)
+ * @see #instance
+ * @see #database
+ * @see #teamManager
+ * @see #playerPermissions
+ * @since 1.0
+ */
 public final class LienubsTeam extends JavaPlugin {
     private static LienubsTeam instance;
     public Database database;
@@ -47,12 +92,32 @@ public final class LienubsTeam extends JavaPlugin {
         super(loader, description, dataFolder, file);
     }
 
+    /**
+     * When the plugin is enabled.
+     *
+     * @see #onPluginStart()
+     * @see #setInstance(LienubsTeam)
+     * @since 1.0
+     */
     @Override
     public void onEnable() {
         setInstance(this);
         onPluginStart();
     }
 
+    /**
+     * When the plugin is disabled.
+     *
+     * @see Bukkit
+     * @see #instance
+     * @see #setInstance(LienubsTeam)
+     * @see Player
+     * @see PermissionAttachment
+     * @see Bukkit#getOnlinePlayers()
+     * @see Player#closeInventory()
+     * @see Player#removeAttachment(PermissionAttachment)
+     * @since 1.0
+     */
     @Override
     public void onDisable() {
         if (instance == null) {
@@ -71,9 +136,25 @@ public final class LienubsTeam extends JavaPlugin {
         }
     }
 
+    /**
+     * Sets instance of the plugin.
+     *
+     * @param pluginInstance the plugin instance
+     * @see #instance
+     * @since 1.0
+     */
     private static void setInstance(@Nullable LienubsTeam pluginInstance) {
         instance = pluginInstance;
     }
+
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     * @see #instance
+     * @see JavaPlugin#getPlugin(Class)
+     * @since 1.0
+     */
     public static LienubsTeam getInstance() {
         return getPlugin(LienubsTeam.class);
     }
@@ -120,14 +201,39 @@ public final class LienubsTeam extends JavaPlugin {
 
     }
 
+    /**
+     * Register objects.
+     *
+     * @see TeamManager
+     * @see TeamDAO
+     * @see #database
+     * @see #teamManager
+     * @since 1.0
+     */
     public void registerObjects() {
         teamManager = new TeamManager(new TeamDAO(database));
     }
 
+    /**
+     * Register commands.
+     *
+     * @see TeamCommand
+     * @see #getCommand(String)
+     * @since 1.0
+     */
     public void registerCommands() {
         Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand(this));
     }
 
+    /**
+     * Register listener.
+     *
+     * @see PlayerPositionListener
+     * @see BlockInteractionListener
+     * @see TeamInfoListener
+     * @see PlayerJoinListener
+     * @since 1.0
+     */
     public void registerListener() {
         new PlayerPositionListener(this);
         new BlockInteractionListener(this);
