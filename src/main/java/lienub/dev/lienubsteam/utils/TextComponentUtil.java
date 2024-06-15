@@ -24,10 +24,9 @@ import java.util.Map;
  * @since 1.0
  */
 public class TextComponentUtil {
-    public static TextComponent createMessage(String message, ChatColor color) {
-        TextComponent textComponent = new TextComponent(message);
-        textComponent.setColor(color);
-        return textComponent;
+
+    private TextComponentUtil() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**
