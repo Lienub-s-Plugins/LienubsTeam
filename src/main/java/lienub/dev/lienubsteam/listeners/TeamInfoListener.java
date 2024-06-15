@@ -40,8 +40,6 @@ public class TeamInfoListener implements Listener {
      */
     @EventHandler
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        // We're getting the clicked inventory to avoid situations where the player
-        // already has a stone in their inventory and clicks that one.
         Inventory inventory = event.getInventory();
         // Add a null check in case the player clicked outside the window.
         if (!(inventory.getHolder() instanceof TeamInfoHolder)) {
