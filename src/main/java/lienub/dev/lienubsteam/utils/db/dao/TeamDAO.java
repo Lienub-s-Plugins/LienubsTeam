@@ -9,15 +9,31 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import java.util.*;
 
+/**
+ * Data Access Object for the Team class.
+ *
+ */
 public class TeamDAO implements DAO<Team, Object> {
     private final Database database;
 
+    /**
+     * Instantiates a new Team dao.
+     *
+     * @param database the database
+     */
     public TeamDAO(Database database) {
         this.database = database;
     }
 
 
-    public Team createTeam(String name, Player leader) {
+    /**
+     * Create the team.
+     *
+     * @param name   the name
+     * @param leader the leader
+     * @return the team
+     */
+    public Team createTeam(String name, @NotNull Player leader) {
         List<Member> members = new ArrayList<>();
         members.add(new Member(leader.getUniqueId(), Role.LEADER));
         Team team = new Team(this, null, name, leader.getUniqueId(), members, new ArrayList<>());
