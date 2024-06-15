@@ -1,16 +1,14 @@
 package lienub.dev.lienubsteam.utils.managers;
 
-import lienub.dev.lienubsteam.LienubsTeam;
 import lienub.dev.lienubsteam.utils.db.dao.TeamDAO;
 import lienub.dev.lienubsteam.utils.team.Member;
 import lienub.dev.lienubsteam.utils.team.Role;
 import lienub.dev.lienubsteam.utils.team.Team;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The class Team manager.
@@ -167,5 +165,123 @@ public class TeamManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets member.
+     *
+     * @param player the player
+     * @return the member
+     */
+    public Member getMember(Player player) {
+        for (Team team : teams) {
+            for (Member member : team.getMembers()) {
+                if (member.getPlayerUUID().equals(player.getUniqueId())) {
+                    return member;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Invite player to team.
+     *
+     * @param player the player
+     * @param team   the team
+     */
+    public void invitePlayerToTeam(@NotNull Player player, Team team) {
+        if (invitations.containsKey(player.getUniqueId())) {
+            invitations.get(player.getUniqueId()).add(team);
+        } else {
+            invitations.put(player.getUniqueId(), new ArrayList<>(List.of(team)));
+        }
+    }
+
+    /**
+     * Request join team.
+     *
+     * @param player the player
+     * @param team   the team
+     */
+    public void requestJoinTeam(@NotNull Player player, Team team) {
+        if (joinRequests.containsKey(player.getUniqueId())) {
+            joinRequests.get(player.getUniqueId()).add(team);
+        } else {
+            joinRequests.put(player.getUniqueId(), new ArrayList<>(List.of(team)));
+        }
+    }
+
+    /**
+     * Request teleport.
+     *
+     * @param sender the sender
+     * @param target the target
+     */
+    public void requestTeleport(@NotNull Player sender, @NotNull Player target) {
+        tpaRequests.put(target.getUniqueId(), sender.getUniqueId());
+    }
+
+    /**
+     * Accept invitation.
+     *
+     * @param player the player
+     * @param t      the t
+     */
+    public void acceptInvitation(@NotNull Player player, Team t) {
+        Team team = invitations.get(player.getUniqueId()).contains(t) ? t : null;
+        if (team != null) {
+            // The player was invited, add them to the team
+            team.addMember(new Member(player.getUniqueId(), Role.MEMBER));
+            // Remove the invitations
+            invitations.remove(player.getUniqueId()).remove(team);
+        }
+    }
+
+    /**
+     * Accept join request.
+     *
+     * @param player the player
+     * @param t      the t
+     */
+    public void acceptJoinRequest(@NotNull Player player, Team t) {
+        Team team = joinRequests.get(player.getUniqueId()).contains(t) ? t : null;
+        if (team != null) {
+            // The player was accepted, add them to the team
+            team.addMember(new Member(player.getUniqueId(), Role.MEMBER));
+            joinRequests.remove(player.getUniqueId()).remove(team);
+        }
+    }
+
+    /**
+     * Deny invitation.
+     *
+     * @param player the player
+     * @param team   the team
+     */
+    public void denyInvitation(@NotNull Player player, Team team) {
+        // Remove the invitation without adding the player to the team
+        invitations.remove(player.getUniqueId()).remove(team);
+    }
+
+    /**
+     * Deny join request.
+     *
+     * @param player the player
+     * @param team   the team
+     */
+    public void denyJoinRequest(@NotNull Player player, Team team) {
+        // Remove the request without adding the player to the team
+        joinRequests.remove(player.getUniqueId()).remove(team);
+    }
+
+    /**
+     * Disband team.
+     *
+     * @param team the team
+     */
+    public void disbandTeam(Team team) {
+        teamDAO.delete(team);
+        teams.remove(team);
     }
 }

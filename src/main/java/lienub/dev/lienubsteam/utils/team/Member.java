@@ -1,6 +1,9 @@
 package lienub.dev.lienubsteam.utils.team;
 
+import lienub.dev.lienubsteam.LienubsTeam;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -35,6 +38,7 @@ public class Member {
     public Member(UUID player, @Nullable Role role) {
         this.uuid = player;
         this.role = role != null ? role : Role.MEMBER;
+        updatePermissions(LienubsTeam.getInstance());
     }
 
     /**
@@ -54,10 +58,45 @@ public class Member {
      * @see Role
      */
     public String getRole() {
-        return role.getRole();
+        return role.getRoleName();
     }
 
-    public void setRole(String role) {
-        this.role = Role.valueOf(role);
+    /**
+     * Gets role enum.
+     *
+     * @return the role enum
+     * @see Role
+     */
+    public Role getRoleEnum() {
+        return role;
+    }
+
+    /**
+     * Sets role.
+     *
+     * @param role the role
+     *             (default is MEMBER)
+     * @see Role
+     */
+    public void setRole(@NotNull String role) {
+        this.role = Role.valueOf(role.toUpperCase());
+        updatePermissions(LienubsTeam.getInstance());
+    }
+
+    private void updatePermissions(@NotNull LienubsTeam plugin) {
+        Player player = plugin.getServer().getPlayer(uuid);
+        if (player != null) {
+            plugin.getLogger().info("Updating permissions for " + player.getName());
+            PermissionAttachment attachment = player.addAttachment(plugin);
+
+            // Add the new permissions
+            for (String permission : role.getPermissions()) {
+                attachment.setPermission(permission, true);
+            }
+
+            plugin.getPlayerPermissions().put(uuid, attachment);
+
+            player.recalculatePermissions();
+        }
     }
 }
