@@ -57,6 +57,11 @@ public class TeamInfoListener implements Listener {
     private void itemLogic(ItemStack clickedItem, Inventory inventory) {
         if (clickedItem != null && clickedItem.getItemMeta() != null) {
             TeamInfoHolder holder = (TeamInfoHolder) inventory.getHolder();
+
+            if (holder == null) {
+                return;
+            }
+
             switch (clickedItem.getItemMeta().getDisplayName()) {
                 case "Page précédente":
                     holder.previousPage();
