@@ -1,9 +1,11 @@
 package lienub.dev.lienubsteam.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -107,12 +109,12 @@ public class TextComponentUtil {
         TextComponent acceptComponent = new TextComponent("✔  ");
         acceptComponent.setColor(ChatColor.GREEN);
         acceptComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, acceptCommand));
-        acceptComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Accepter")}));
+        acceptComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new BaseComponent[]{new TextComponent("Accepter")})));
 
         TextComponent denyComponent = new TextComponent("✖  ");
         denyComponent.setColor(ChatColor.RED);
         denyComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, denyCommand));
-        denyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Refuser")}));
+        acceptComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new BaseComponent[]{new TextComponent("Refuser")})));
 
         TextComponent messageComponent = new TextComponent("| ");
         messageComponent.setColor(ChatColor.WHITE);
