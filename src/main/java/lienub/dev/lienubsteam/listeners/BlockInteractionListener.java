@@ -1,23 +1,26 @@
 package lienub.dev.lienubsteam.listeners;
 
 import lienub.dev.lienubsteam.LienubsTeam;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import lienub.dev.lienubsteam.utils.TextComponentUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+/**
+ * Listens for block interactions.
+ * Prevents players from interacting with blocks in claimed chunks.
+ *
+ * @see Listener
+ * @see PlayerInteractEvent
+ * @see EventHandler
+ * @see TextComponentUtil
+ * @see LienubsTeam
+ * @see BlockInteractionListener
+ * @since 1.0
+ * @version 1.0
+ *
+ */
 public class BlockInteractionListener implements Listener {
     private final LienubsTeam plugin;
 
