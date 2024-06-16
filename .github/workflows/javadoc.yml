@@ -20,4 +20,4 @@ jobs:
           java-version: "16" # Replace with your java version. Default is 17
           java-distribution: "adopt" # The distributor of the target JDK. See https://github.com/actions/setup-java for more information. Defauly is adopt
           project: maven # The project type. By default maven
-          branch: "master" # The branch for the javadoc contents. By default gh-pages
+          branch: "docs" # The branch for the javadoc contents. By default gh-pages
