@@ -1,6 +1,7 @@
 package lienub.dev.lienubsteam.listeners;
 
 import lienub.dev.lienubsteam.LienubsTeam;
+import lienub.dev.lienubsteam.utils.ClaimBossBarHolder;
 import lienub.dev.lienubsteam.utils.team.Member;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,5 +62,9 @@ public class PlayerJoinListener implements Listener {
                 attachment.setPermission(permission, true);
             }
         }
+
+        // Add boss bar for the player
+        ClaimBossBarHolder.setupClaimBossBar(event.getPlayer(), event.getPlayer().getLocation().getChunk());
+
     }
 }
